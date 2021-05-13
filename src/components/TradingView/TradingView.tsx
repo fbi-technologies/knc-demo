@@ -64,11 +64,7 @@ const TradingView: FC<Props> = ({ width = 600, height = 300, data = [] }) => {
 
   return (
     <>
-      <div
-        className={classes.tradingView}
-        ref={container}
-        style={{ width, height }}
-      >
+      <div className={classes.tradingView} ref={container}>
         <div className={classes.maText}>
           MA10 <span className={classes.maValue}>{maValue}</span>
         </div>
