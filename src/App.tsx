@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import ToolBar from './components/ToolBar/ToolBar';
 import TradingView from './components/TradingView/TradingView';
 import { DEFAULT_MARKET } from './constants/market.constant';
 import {
@@ -18,19 +19,29 @@ function App() {
     dispatch(
       fetchCandlestickData.request({
         symbol: DEFAULT_MARKET,
-        interval: '1h',
+        interval: '1m',
       }),
     );
   }, [dispatch]);
-  const market = useSelector((store) => store.market.market, shallowEqual);
+  const market = useSelector((store) => store.market);
 
   return (
     <div className="App">
-      {market.loading ? (
-        <div>Loading....</div>
-      ) : (
-        <TradingView width={600} height={300} data={market.data} />
-      )}
+      <div className="container">
+        {market.exchange.loading || <ToolBar />}
+        {market.market.loading || market.exchange.loading ? (
+          <div>Loading....</div>
+        ) : (
+          <div className="tradingViewWrapper">
+            <TradingView
+              width={700}
+              height={500}
+              data={market.market.data}
+              interval={market.market.interval}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

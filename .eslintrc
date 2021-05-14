@@ -29,7 +29,20 @@
     "prettier"
   ],
   "rules": {
+    "react/jsx-closing-bracket-location": [
+      1,
+      {
+        "selfClosing": "line-aligned",
+        "nonEmpty": "after-props"
+      }
+    ],
     "consistent-return": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
     "react/jsx-filename-extension": [
       1,
       {
@@ -41,7 +54,6 @@
         ]
       }
     ],
-    "prettier/prettier": "error",
     "@typescript-eslint/explicit-function-return-type": "off",
     "import/extensions": [
       "error",

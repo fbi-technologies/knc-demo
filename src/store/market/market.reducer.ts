@@ -1,7 +1,11 @@
 import { createReducer } from 'typesafe-actions';
 import { DEFAULT_MARKET } from '../../constants/market.constant';
 import { MarketStore } from '../../models/stores/market/market.model';
-import { fetchCandlestickData, fetchExchangeInfo } from './market.action';
+import {
+  fetchCandlestickData,
+  fetchExchangeInfo,
+  addCandlestickData,
+} from './market.action';
 
 const INIT_STATE: MarketStore = {
   exchange: {
@@ -46,6 +50,13 @@ const reducer = createReducer<MarketStore>(INIT_STATE)
       ...state.market,
       loading: false,
       data: action.payload,
+    },
+  }))
+  .handleAction(addCandlestickData, (state, action) => ({
+    ...state,
+    market: {
+      ...state.market,
+      data: [...state.market.data, action.payload],
     },
   }));
 

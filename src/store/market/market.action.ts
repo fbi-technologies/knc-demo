@@ -1,5 +1,5 @@
 import { BarData } from 'lightweight-charts';
-import { createAsyncAction } from 'typesafe-actions';
+import { createAction, createAsyncAction } from 'typesafe-actions';
 import { MarketIntervalValue } from '../../constants/market.constant';
 import { mapExchangeInfo } from '../../helpers/market.helper';
 
@@ -21,3 +21,12 @@ export const fetchCandlestickData = createAsyncAction(
   'FETCH_CANDLESTICK_DATA_SUCCESS',
   'FETCH_CANDLESTICK_DATA_FAILED',
 )<FetchCandlestickRequestPayload, BarData[], void>();
+
+export const addCandlestickData = createAction(
+  'ADD_CANDLESTICK_DATA',
+)<BarData>();
+
+export const changeInterval =
+  createAction('CHANGE_INTERVAL')<MarketIntervalValue>();
+
+export const changeSymbol = createAction('CHANGE_SYMBOL')<string>();
