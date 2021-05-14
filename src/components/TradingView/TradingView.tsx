@@ -14,6 +14,7 @@ import {
   MouseEventParams,
   TickMarkType,
   UTCTimestamp,
+  ISeriesApi,
 } from 'lightweight-charts';
 import { format } from 'date-fns';
 import { calculateSMA } from '../../utils/chart.utils';
@@ -40,6 +41,7 @@ const TradingView: FC<Props> = ({
 }) => {
   const container = useRef<HTMLDivElement>(null);
   const chart = useRef<IChartApi>();
+  const candleSeries = useRef<ISeriesApi<'Candlestick'>>();
   const [maValue, setMaValue] = useState(INIT_MA_VALUE);
 
   const setLegendText = useCallback((priceValue?: number) => {
@@ -66,14 +68,14 @@ const TradingView: FC<Props> = ({
         crosshair: {
           mode: CrosshairMode.Normal,
         },
-        grid: {
-          vertLines: {
-            color: 'rgba(197, 203, 206, 0.7)',
-          },
-          horzLines: {
-            color: 'rgba(197, 203, 206, 0.7)',
-          },
-        },
+        // grid: {
+        //   vertLines: {
+        //     color: 'rgba(197, 203, 206, 0.7)',
+        //   },
+        //   horzLines: {
+        //     color: 'rgba(197, 203, 206, 0.7)',
+        //   },
+        // },
         timeScale: {
           rightOffset: 12,
           barSpacing: 3,
@@ -103,17 +105,17 @@ const TradingView: FC<Props> = ({
           },
         },
       });
+      candleSeries.current = chart.current.addCandlestickSeries();
     }
   }, [data, height, setLegendText, width, interval]);
 
   useEffect(() => {
-    if (chart.current) {
+    if (chart.current && candleSeries.current) {
       console.log('Update Data');
-      const candleSeries = chart.current.addCandlestickSeries();
 
-      candleSeries.setData(data);
+      candleSeries.current.setData(data);
       if (data.length > 0 && data[0].high < 10) {
-        candleSeries.applyOptions({
+        candleSeries.current.applyOptions({
           priceFormat: {
             precision: 5,
             minMove: 0.00001,
@@ -129,11 +131,11 @@ const TradingView: FC<Props> = ({
       smaLine.setData(smaData);
 
       chart.current.subscribeCrosshairMove((param: MouseEventParams) => {
-        setLegendText(param.seriesPrices.get(smaLine) as any);
+        setLegendText(param.seriesPrices.get(smaLine) as number | undefined);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, setLegendText, chart.current]);
+  }, [data, setLegendText, chart.current, candleSeries.current]);
 
   return (
     <>
