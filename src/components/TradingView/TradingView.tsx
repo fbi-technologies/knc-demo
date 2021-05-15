@@ -4,7 +4,6 @@ import React, {
   useLayoutEffect,
   useRef,
   useState,
-  useEffect,
 } from 'react';
 import {
   BarData,
@@ -15,6 +14,7 @@ import {
   TickMarkType,
   UTCTimestamp,
   ISeriesApi,
+  LineType,
 } from 'lightweight-charts';
 import { format } from 'date-fns';
 import { calculateSMA } from '../../utils/chart.utils';
@@ -42,6 +42,7 @@ const TradingView: FC<Props> = ({
   const container = useRef<HTMLDivElement>(null);
   const chart = useRef<IChartApi>();
   const candleSeries = useRef<ISeriesApi<'Candlestick'>>();
+  const smaLine = useRef<ISeriesApi<'Line'>>();
   const [maValue, setMaValue] = useState(INIT_MA_VALUE);
 
   const setLegendText = useCallback((priceValue?: number) => {
@@ -112,8 +113,8 @@ const TradingView: FC<Props> = ({
     }
   }, [data, height, setLegendText, width, interval]);
 
-  useEffect(() => {
-    if (chart.current && candleSeries.current) {
+  useLayoutEffect(() => {
+    if (chart.current && candleSeries.current && data.length > 0) {
       // eslint-disable-next-line no-console
       console.log('Update Data');
 
@@ -128,18 +129,32 @@ const TradingView: FC<Props> = ({
       }
 
       const smaData = calculateSMA(data, 10);
-      const smaLine = chart.current.addLineSeries({
+      if (smaLine.current) {
+        chart.current?.removeSeries(smaLine.current);
+      }
+      smaLine.current = chart.current.addLineSeries({
         color: 'rgba(4, 111, 232, 1)',
         lineWidth: 2,
+        lineType: LineType.Simple,
       });
-      smaLine.setData(smaData);
+      smaLine.current?.setData(smaData);
 
       chart.current.subscribeCrosshairMove((param: MouseEventParams) => {
-        setLegendText(param.seriesPrices.get(smaLine) as number | undefined);
+        if (smaLine?.current) {
+          setLegendText(
+            param.seriesPrices.get(smaLine.current) as number | undefined,
+          );
+        }
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, setLegendText, chart.current, candleSeries.current]);
+  }, [
+    data,
+    setLegendText,
+    chart.current,
+    candleSeries.current,
+    smaLine.current,
+  ]);
 
   return (
     <>

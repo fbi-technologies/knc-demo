@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import ToolBar from './components/ToolBar/ToolBar';
 import TradingView from './components/TradingView/TradingView';
 import { DEFAULT_MARKET } from './constants/market.constant';
@@ -23,7 +23,7 @@ function App() {
       }),
     );
   }, [dispatch]);
-  const market = useSelector((store) => store.market);
+  const market = useSelector((store) => store.market, shallowEqual);
 
   return (
     <div className="App">
