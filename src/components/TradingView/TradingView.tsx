@@ -92,7 +92,10 @@ const TradingView: FC<Props> = ({
             const date = new Date(time);
 
             if (!['1d', '1w'].includes(interval)) {
-              if (date.getHours() < 12) {
+              if (
+                date.getHours() < 12 &&
+                !['1m', '3m', '5m'].includes(interval)
+              ) {
                 return date.getDate();
               }
               return format(date, 'HH:mm');
@@ -111,6 +114,7 @@ const TradingView: FC<Props> = ({
 
   useEffect(() => {
     if (chart.current && candleSeries.current) {
+      // eslint-disable-next-line no-console
       console.log('Update Data');
 
       candleSeries.current.setData(data);

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { ValueType } from 'react-select/src/types';
 import Select, { Option } from '../ui/Select/Select';
@@ -13,22 +13,16 @@ const ToolBar: FC = () => {
   const market = useSelector((store) => store.market, shallowEqual);
 
   const dispatch = useDispatch();
-  const onChangeInterval = useCallback(
-    (value: ValueType<Option, false>) => {
-      if (value) {
-        dispatch(changeInterval(value.value as MarketIntervalValue));
-      }
-    },
-    [dispatch],
-  );
-  const onChangeSymbol = useCallback(
-    (value: ValueType<Option, false>) => {
-      if (value) {
-        dispatch(changeSymbol(value.value));
-      }
-    },
-    [dispatch],
-  );
+  const onChangeInterval = (value: ValueType<Option, false>) => {
+    if (value) {
+      dispatch(changeInterval(value.value as MarketIntervalValue));
+    }
+  };
+  const onChangeSymbol = (value: ValueType<Option, false>) => {
+    if (value) {
+      dispatch(changeSymbol(value.value));
+    }
+  };
   const infos = useMemo<Option[]>(
     () =>
       market.exchange.info.map((i) => ({
@@ -41,13 +35,12 @@ const ToolBar: FC = () => {
     const symbol = market.exchange.info.find(
       (i) => i.symbol === market.market.symbol,
     );
-    if (symbol)
-      return {
+    return (
+      symbol && {
         label: symbol.symbol,
         value: symbol.symbol,
-      };
-
-    return null;
+      }
+    );
   }, [market.exchange.info, market.market.symbol]);
 
   const selectTimeInterval = useMemo(

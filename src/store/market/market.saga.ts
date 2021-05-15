@@ -107,9 +107,11 @@ function* openSocket(symbol: string) {
 function createSocket(symbol: string) {
   const socket = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol}`);
   socket.onopen = () => {
+    // eslint-disable-next-line no-console
     console.log('Open Websocket');
   };
   socket.onclose = () => {
+    // eslint-disable-next-line no-console
     console.log('Close Websocket');
   };
 
@@ -142,6 +144,7 @@ function createSocketChanel(socket: WebSocket) {
       socket.close();
       yield call(closeSocket, socket);
 
+      // eslint-disable-next-line no-console
       console.log('disconnected');
     };
   });

@@ -1,7 +1,7 @@
 import { BarData } from 'lightweight-charts';
 
 export function calculateSMA(data: BarData[], count: number) {
-  const avg = function (data: BarData[]) {
+  const avg = (data: BarData[]) => {
     let sum = 0;
     for (let i = 0; i < data.length; i++) {
       sum += data[i].close;
